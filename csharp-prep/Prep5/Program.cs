@@ -10,7 +10,7 @@ class Program
         int squared = SquareNumber(favNumber);
         DisplayResult(name, squared);
     }
-
+    //comment
     static void DisplayWelcome()
     {
         Console.WriteLine("Welcome to the Program!");
