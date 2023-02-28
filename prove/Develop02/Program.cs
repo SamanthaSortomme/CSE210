@@ -16,6 +16,7 @@ using System;
 
 class Program
 {
+    static string autoFile = "CSE210Journal.txt";
     static List<string> questions = new List<string>(new string[] {
         "how tall were you today?",
         "Who was the most interesting person I interacted with today?",
@@ -24,33 +25,24 @@ class Program
         "What was the strongest emotion I felt today?",
         "If I had one thing I could do over today, what would it be?",
         "What is love? (baby don't hurt me)",
-        "what are you never gonna give up?",
+        "What are you never gonna give up?",
         "What is the meaning of live the universe and everything?"
     });
 
     static void Main(string[] args)
     {
         Journal myJournal = new Journal();
-
-        //test save functionality
-        // myJournal._entries.Add(new Entry());
-        // myJournal._entries[0]._date = "11/2/2022";
-        // myJournal._entries[0]._prompt = "what is the squarer root of 2?";
-        // myJournal._entries[0]._response = "how would I know that? I don't even know what I ate for dinner last night.";
-
-        // myJournal.Save();
-        //test load functionality
-        //myJournal.Load();
-
-        myJournal.Display();
-
-        // myJournal.Write("Write something.");
-        // myJournal.Write("Write something mark2.");
-        // myJournal.Write("Write something the third.");
-        // myJournal.Display();
-
         int number;
         //        Console.Write(number);
+        if (File.Exists("CSE210Journal.txt"))
+        {
+            myJournal.Load("CSE210Journal.txt");
+            int totalEntries = myJournal._entries.Count;
+            string startDate = myJournal._entries[0]._date;
+            Console.Write($"welcome back! You have {totalEntries} entries in your journal since {startDate}.\n\n");
+        }
+
+
 
         while (true)
         {
@@ -61,6 +53,7 @@ class Program
             }
             else
             {
+                myJournal.Save("CSE210Journal.txt");
                 break;
             }
         }

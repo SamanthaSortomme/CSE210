@@ -36,12 +36,13 @@ public class Journal
     }
 
     // promps user for text file name and saves current journal to that file
-    public void Save()
+    public void Save(string fileName = null)
     {
-        string fileName;
-        Console.Write("Enter the file name: ");
-        fileName = Console.ReadLine();
-
+        if (fileName == null)
+        {
+            Console.Write("Enter the file name: ");
+            fileName = Console.ReadLine();
+        }
         using (StreamWriter outputFile = new StreamWriter(fileName))
         {
             foreach (Entry entry in _entries)
@@ -50,22 +51,31 @@ public class Journal
         }
     }
 
-    public void Load()
+    public void Load(string fileName = null)
     {
-        string fileName;
-        Console.Write("Enter the file name: ");
-        fileName = Console.ReadLine();
-
-        string[] lines = System.IO.File.ReadAllLines(fileName);
-        int entryCount = 0;
-        foreach (string line in lines)
+        if (fileName == null)
         {
-            _entries.Add(new Entry());
-            string[] parts = line.Split("~");
-            _entries[entryCount]._date = parts[0];
-            _entries[entryCount]._prompt = parts[1];
-            _entries[entryCount]._response = parts[2];
-            entryCount++;
+            Console.Write("Enter the file name: ");
+            fileName = Console.ReadLine();
+        }
+
+        try
+        {
+            string[] lines = System.IO.File.ReadAllLines(fileName);
+            int entryCount = 0;
+            foreach (string line in lines)
+            {
+                _entries.Add(new Entry());
+                string[] parts = line.Split("~");
+                _entries[entryCount]._date = parts[0];
+                _entries[entryCount]._prompt = parts[1];
+                _entries[entryCount]._response = parts[2];
+                entryCount++;
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
         }
     }
 }
