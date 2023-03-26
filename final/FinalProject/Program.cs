@@ -1,5 +1,5 @@
 using System;
-
+using FinalProject.Characters;
 class Program
 {
     static void Main(string[] args)

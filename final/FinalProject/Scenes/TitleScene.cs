@@ -25,7 +25,7 @@ namespace FinalProject.Scenes
 /___|\___| \__, | \___||_||_| \__,_|  \___/ |_|   |____|\___||_|\__,_|\__,_| 
            |___/                                                                                 
 Use the arrow keys and press enter to make your choice.";
-            string[] options = { "Start Game", "Options", "Exit" };
+            string[] options = { "Start Game", "Exit" };
             Menu mainMenu = new Menu(options, prompt);
 
             int selection = mainMenu.Run();

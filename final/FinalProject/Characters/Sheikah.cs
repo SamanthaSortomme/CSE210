@@ -8,7 +8,7 @@ namespace FinalProject.Characters
 
         public override string AttackNarrative(float damage)
         {
-            return $"You launch your hookshot, it's a hit! {damage} hearts worth of damage was dealt.";
+            return $"You launch your hookshot, it's a hit! {damage} hearts worth of damage was dealt.\n";
         }
 
         public override float AttackSkill()
@@ -18,7 +18,7 @@ namespace FinalProject.Characters
 
         public override string DefendNarrative()
         {
-            return $"You see the attack coming from a mile away, quickly you blind your enemy with sand and do a back flip, avoiding all damage.";
+            return $"You hone in all your focus on your enemies movements, prepared to evade anything that comes your way.\n";
         }
 
         public override float DefenseSkill()
@@ -28,14 +28,23 @@ namespace FinalProject.Characters
 
         public override string HealNarrative()
         {
-            return $"Calling on spirits of the past you feel your wounds bind themselves.";
+            if (GetMagic() > 1)
+            {
+                return $"Calling on spirits of the past you feel your wounds bind themselves.\n";
+            }
+            else
+            {
+                return $"You attempt to call upon your healing magics but your mind is too muddled to recite the correct formula\n";
+            }
         }
 
         public override string HealSkill()
         {
             int magic = GetMagic();
+            string narrative;
             if (magic >= 2)
             {
+                narrative = HealNarrative();
                 magic -= 2;
                 SetMagic(magic);
                 float heal = GetMaxHeart() * (float)0.75;
@@ -48,9 +57,13 @@ namespace FinalProject.Characters
                 {
                     SetHeart(GetMaxHeart());
                 }
-                return "You close your eyes and recite the familiar words of healing and feel the pain of your wounds soothed.\n";
             }
-            return "You attempt to call upon your healing magics but your mind is too muddled to recite the correct formula\n";
+            else
+            {
+                narrative = HealNarrative();
+            }
+            return narrative;
+
         }
 
         public override int MonsterChoice()
@@ -60,7 +73,14 @@ namespace FinalProject.Characters
 
         public override string SpecialNarrative(float damage)
         {
-            return $"Magic flows out of you, BAM! {damage} hearts worth of damage taken by all foes around you.";
+            if (damage > 0)
+            {
+                return $"Magic flows out of you and a sphere of flame bursts forth. {damage} hearts worth of damage is dealt to your foe!\n";
+            }
+            else
+            {
+                return $"You try to recite the words of your spell but lack the magical power to make the words flow.\n";
+            }
         }
 
         public override float SpecialSkill()
@@ -77,7 +97,6 @@ namespace FinalProject.Characters
             }
             else
             {
-                Console.Write("Not enough magic power to execute this attack.\n");
                 return 0;
             }
         }

@@ -99,7 +99,7 @@ namespace FinalProject.Characters
         {
             _blocking = blocking;
         }
-        public void SetSpecialTrait(bool trait)
+        public virtual void SetSpecialTrait(bool trait)
         {
             _specialTrait = trait;
         }

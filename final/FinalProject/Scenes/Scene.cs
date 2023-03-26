@@ -7,7 +7,7 @@ using FinalProject.Characters;
 
 namespace FinalProject.Scenes
 {
-    class Scene
+    abstract class Scene
     {
         protected Game _myGame;
         public Scene(Game game)
@@ -20,6 +20,9 @@ namespace FinalProject.Scenes
             return 0;
         }
 
+        public virtual void Run(Character player)
+        {
+        }
         public virtual int Run(Character player, Character monster, string message)
         {
             return 0;

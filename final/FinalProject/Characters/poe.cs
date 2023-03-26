@@ -8,7 +8,7 @@ namespace FinalProject.Characters
 
         public override string AttackNarrative(float damage)
         {
-            return $"It runs into you, you feel sick to your stomach, take {damage} hearts worth of damage.";
+            return $"It runs into you, you feel sick to your stomach. You take {damage} hearts worth of damage.\n";
         }
 
         public override float AttackSkill()
@@ -18,7 +18,7 @@ namespace FinalProject.Characters
 
         public override string DefendNarrative()
         {
-            return $"You try to hit it, but it goes invisible.";
+            return $"With a irritating laugh the poe's body suddenly becomes transparent till it is almost completely invisible.\n";
         }
 
         public override float DefenseSkill()
@@ -41,7 +41,10 @@ namespace FinalProject.Characters
         {
             if (!GetSpecialTrait())
             {
-                float attack = (float)0.50; // anything less than .35 and the monster will attack
+                // 50% chance to attack
+                // 35% chance to defend
+                // 15% chance to perform special
+                float attack = (float)0.50;
                 float defend = (float)0.85;
                 float choice = GenerateValue(0, 1, false);
                 if (choice < attack)
@@ -54,19 +57,34 @@ namespace FinalProject.Characters
                 }
                 else
                 {
-                    return 2;
+                    return 3;
                 }
             }
             else
             {
-                return 3;
+                return 2;
             }
 
         }
 
         public override string SpecialNarrative(float damage)
         {
-            return $"It starts swirling, now it's spinning in circles and moving toward you. AHHHHH!!! You take {damage} hearts worth of damage.";
+            if (GetSpecialTrait())
+
+            {
+                return "The Poe begins spinning around in circles.\n";
+            }
+            else
+            {
+                if (damage > 0)
+                {
+                    return $"Now it's spinning faster and moves quickly towards you. AHHHHH!!! You take {damage} hearts worth of damage.\n";
+                }
+                else
+                {
+                    return $"The poe attempts to spin, but without magical energy it cannot gain any momentum and gives up on the attack.\n";
+                }
+            }
         }
 
         public override float SpecialSkill()
@@ -74,9 +92,9 @@ namespace FinalProject.Characters
             if (!GetSpecialTrait())
             {
                 int magic = GetMagic();
-                if (magic >= 6)
+                if (magic >= 5)
                 {
-                    magic -= 2;
+                    magic -= 5;
                     SetMagic(magic);
                     SetSpecialTrait(true);
                     return 0;

@@ -12,37 +12,37 @@ namespace FinalProject.Scenes
         {
         }
 
-        public override int Run(Character player, Character monster, string message)
+        public override int Run(Character player, Character monster, string message1)
         {
-
-            // used to reference whether the character is attacking, defending, or healing to determine how the combat value is used.
-            // byte playerActionReference = 0;
-            // byte monsterActionReference = 0;
 
             // float playerCombatValue, monsterCombatValue;
             string[] options = CreateOptions(player.GetName());
+            string prompt;
+            string message2 = "Choose your choice to decide the decision. Or in other words, act the action.\n";
             while (true)
             {
-                string prompt = CreatePrompt(player, message);
+                prompt = CreatePrompt(player, message1, message2);
                 Menu attackMenu = new Menu(options, prompt);
                 int playerChoice = attackMenu.Run();
                 int monsterChoice = monster.MonsterChoice();
 
-                // playerCombatValue = CharacterAction(player, choice, ref playerActionReference);
-
-                // monsterCombatValue = CharacterAction(monster, monsterChoice, ref monsterActionReference);
-                // removed playerCombatValue, monsterCombatValue, from resolveAction
-                message = ResolveAction(player, monster, playerChoice, monsterChoice);
+                message1 = ResolveAction(player, monster, playerChoice, monsterChoice);
 
                 if (player.GetHeart() <= 0)
                 {
-                    WriteLine("You have lost.");
+                    message2 = "You have lost the fight and your life.";
+                    prompt = CreatePrompt(player, message1, message2);
+                    Clear();
+                    WriteLine(prompt);
                     ConsoleUtilities.WaitForKeyPress();
                     return 0; // 0 indicates the player lost the battle
                 }
                 else if (monster.GetHeart() <= 0)
                 {
-                    WriteLine("You have won!");
+                    message2 = "The hard fought victory is yours!";
+                    prompt = CreatePrompt(player, message1, message2);
+                    Clear();
+                    WriteLine(prompt);
                     ConsoleUtilities.WaitForKeyPress();
                     return 1; // 1 indicates the player won the battle
                 }
@@ -67,22 +67,22 @@ namespace FinalProject.Scenes
             return options;
         }
 
-        private string CreatePrompt(Character player, string message)
+        private string CreatePrompt(Character player, string message1, string message2)
         {
             string heartGraphic = HeartGenerator(player.GetHeart());
             int magic = player.GetMagic();
             float attack = player.GetAttack();
             float defense = player.GetDefense();
             string prompt = $@"
-{message}
+{message1}
 
 PLAYER STATS:
-{heartGraphic}ATTACK:  {attack}
-DEFENCE: {defense}
+{heartGraphic}
+ATTACK:  {attack}
+DEFENSE: {defense}
 MAGIC:   {magic}
 
-Choose your choice to decide the decision. Or in other words, act the action.
-";
+{message2}";
             return prompt;
         }
 
@@ -143,44 +143,8 @@ Choose your choice to decide the decision. Or in other words, act the action.
                 }
 
             }
-            heartStings += $"\n";
             return heartStings;
         }
-
-
-        // private float CharacterAction(Character character, int choice, ref byte actionReference)
-        // {
-        //     float combatValue = 0;
-        //     switch (choice)
-        //     {
-        //         case 0:
-        //             {
-        //                 actionReference = 0;
-        //                 combatValue = character.AttackSkill();
-        //                 break;
-        //             }
-        //         case 1:
-        //             {
-        //                 actionReference = 1;
-        //                 combatValue = character.DefenseSkill();
-        //                 break;
-        //             }
-        //         case 2:
-        //             {
-        //                 actionReference = 2;
-        //                 combatValue = character.SpecialSkill();
-        //                 break;
-        //             }
-        //         case 3:
-        //             {
-        //                 actionReference = 3;
-        //                 combatValue = 0;
-        //                 break;
-        //             }
-        //     }
-        //     return combatValue;
-
-        // }
 
         // removed , float playerCV, float monsterCV from method
         private string ResolveAction(Character player, Character monster, int playerChoice, int monsterChoice)
@@ -191,13 +155,13 @@ Choose your choice to decide the decision. Or in other words, act the action.
             bool mActionComplete = false;
             bool mBlocking = false;
             bool mDead = false;
-            bool pDead = false;
+            // bool pDead = false; // not used
             string mName = monster.GetName();
 
-            if (mName == "Skeleton" && monsterChoice == 2)
+            if (mName == "Skeleton" && monsterChoice == 1)
             {
                 mTotalDefense = monster.DefenseSkill();
-                narrative = $"{mName} quickly defends.";
+                narrative = $"{mName} quickly defends.\n";
                 mActionComplete = true;
             }
             else if ((mName == "Scrub" || mName == "Poe") && monster.GetBlocking())
@@ -212,32 +176,55 @@ Choose your choice to decide the decision. Or in other words, act the action.
                     {
                         if (!mBlocking)
                         {
-                            mDead = DealDamage(monster, (player.AttackSkill() - mTotalDefense), ref narrative);
+                            mDead = DealDamage(monster, player, (player.AttackSkill() - mTotalDefense), ref narrative, false);
+                        }
+                        else
+                        {
+                            if (mName == "Scrub")
+                            {
+                                narrative += "You attempt to attack but the scrub is hiding in the ground and seems impossible to hit.\n";
+                            }
+                            else if (mName == "Poe")
+                            {
+                                narrative += "you strike at the poe but miss as it has completely gone invisible\n";
+                            }
                         }
                         break;
                     }
                 case 1:
                     {
                         pTotalDefense = player.DefenseSkill();
+                        narrative += player.DefendNarrative();
                         break;
                     }
                 case 2:
                     {
                         if (!mBlocking)
                         {
-                            mDead = DealDamage(monster, (player.SpecialSkill() - monster.GetDefense()), ref narrative);
+                            mDead = DealDamage(monster, player, (player.SpecialSkill() - monster.GetDefense()), ref narrative, true);
+                        }
+                        else
+                        {
+                            if (mName == "Scrub")
+                            {
+                                narrative += "You attack with all your power but the scrub seems to be immune to all damage while hiding.\n";
+                            }
+                            else if (mName == "Poe")
+                            {
+                                narrative += "You unleash your most powerful attack only to find that an invisible poe can not be harmed.\n";
+                            }
                         }
                         break;
                     }
                 case 3:
                     {
-                        player.HealSkill();
+                        narrative += player.HealSkill();
                         break;
                     }
             }
             if (mDead)
             {
-                return "You have succeeded in not losing!\n";
+                return narrative;
             }
 
             if (!mActionComplete)
@@ -247,61 +234,99 @@ Choose your choice to decide the decision. Or in other words, act the action.
                     case 0:
                         {
 
-                            pDead = DealDamage(player, (monster.AttackSkill() - pTotalDefense), ref narrative);
+                            DealDamage(player, monster, (monster.AttackSkill() - pTotalDefense), ref narrative, false);
                             break;
                         }
                     case 1:
                         {
                             monster.DefenseSkill();
+                            narrative += monster.DefendNarrative();
                             break;
                         }
                     case 2:
                         {
-                            pDead = DealDamage(player, (monster.AttackSkill() - pTotalDefense), ref narrative);
+                            DealDamage(player, monster, (monster.SpecialSkill() - pTotalDefense), ref narrative, true);
                             break;
                         }
-                        // there is no active monster heal skill implemented at this
-                        // case 4:
-                        //     {
-                        //         break;
-                        //     }
+                    // there is no active monster heal skill implemented at this time
+                    // case 3 is used for special cases (warmup and cooldown for special skills)
+                    case 3:
+                        {
+                            float setValue;
+                            if (mName == "Poe")
+                            {
+                                setValue = monster.SpecialSkill();
+                            }
+                            else
+                            {
+                                monster.SetSpecialTrait(false);
+                                setValue = 1;
+                            }
+                            narrative += monster.SpecialNarrative(setValue);
+
+                            break;
+                        }
                 }
             }
             return narrative;
         }
 
-        private bool DealDamage(Character character, float damage, ref string narrative)
+        private bool DealDamage(Character receiver, Character dealer, float damage, ref string narrative, bool special)
         // returns true if damage is fatal damage is dealt, otherwise returns false.
         {
             if (damage > 0)
             {
-                string name = character.GetName();
-                float actualDamage = character.GetHeart() - damage;
-                float health = actualDamage;
-                character.SetHeart(health);
-                if (health <= 0)
+                string name = receiver.GetName();
+                float health = receiver.GetHeart() - damage; ;
+                bool died;
+                receiver.SetHeart(health);
+                if (special)
                 {
-                    if (name == "Hylian" || name == "Scrub")
-                    {
-                        narrative += character.HealSkill();
-                        if (health <= 0)
-                        {
-                            return true;
-                        }
-                    }
-                    return true;
-                }
-                if (name == "Hylian" || name == "Sheikah")
-                {
-                    narrative += $"You are hit for {damage} hearts worth of damage.";
+                    narrative += dealer.SpecialNarrative(damage);
                 }
                 else
                 {
-                    narrative += $"You attack and deal {damage} hearts worth of damage.";
+                    narrative += dealer.AttackNarrative(damage);
+                }
+
+                if (health <= 0)
+                {
+                    died = true;
+
+                    if (name == "Hylian" || name == "Scrub")
+                    {
+                        narrative += receiver.HealSkill();
+                        if (receiver.GetHeart() > 0)
+                        {
+                            died = false;
+                        }
+                    }
+                }
+                else
+                {
+                    died = false;
+                }
+                return died;
+            }
+            else
+            {
+                if (special)
+                {
+                    narrative += dealer.SpecialNarrative(0);
+                }
+                else
+                {
+                    if (dealer.GetName() == "Hylian" || dealer.GetName() == "Shiekah")
+                    {
+                        narrative += $"Your attack is deflected dealing no damage.\n";
+                    }
+                    else
+                    {
+                        narrative += $"You successfully defend yourself from the monsters attack and take no damage. \n";
+                    }
                 }
                 return false;
             }
-            return false;
         }
 
     }

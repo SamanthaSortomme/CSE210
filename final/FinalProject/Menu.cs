@@ -15,7 +15,6 @@ class Menu
         _options = options;
         _prompt = prompt;
     }
-
     private void DisplayOptions()
     {
         WriteLine(_prompt);
@@ -34,7 +33,6 @@ class Menu
     }
     public int Run()
     {
-
         ConsoleKey keyPressed;
         do
         {

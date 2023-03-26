@@ -8,7 +8,7 @@ namespace FinalProject.Characters
 
         public override string AttackNarrative(float damage)
         {
-            return $"The Skeleton takes it's sword and slashes you. You take{damage} hearts worth of damage.";
+            return $"The Skeleton takes its sword and slashes you. You take {damage} hearts worth of damage.\n";
         }
 
         public override float AttackSkill()
@@ -21,7 +21,7 @@ namespace FinalProject.Characters
 
         public override string DefendNarrative()
         {
-            return $"The Skeleton blocks your attack with it's sword, now that's skill.";
+            return $"The Skeleton quickly and skillfuly readies its shield.\n";
         }
 
         public override float DefenseSkill()
@@ -31,7 +31,7 @@ namespace FinalProject.Characters
 
         public override string HealNarrative()
         {
-            return $"The Skeleton laughs, then his ribcage pops back into place.";
+            return $"The Skeleton laughs, then his ribcage pops back into place.\n";
         }
 
         public override string HealSkill()
@@ -62,14 +62,28 @@ namespace FinalProject.Characters
             }
             else
             {
-                SetSpecialTrait(false);
-                return 0;
+                return 3;
             }
         }
 
         public override string SpecialNarrative(float damage)
         {
-            return $"The Skeleton laughs, that can't be good. You don't know what hit you, but it hurt. You take {damage} hearts worth of damage.";
+            if (GetSpecialTrait())
+            {
+                return $"Without warning the skeleton leaps forward with a mighy downward strike. You take {damage} hearts worth of damage but it looks like it will take a moment for the skeleton to regain its composure.\n";
+
+            }
+            else
+            {
+                if (damage == 1)
+                {
+                    return $"The skeleton recovers from its attack.\n";
+                }
+                else
+                {
+                    return $"The skeleton tries to launch its suprise attack, but without the aid of its magical power the motion is easily avioded.\n";
+                }
+            }
         }
 
         public override float SpecialSkill()

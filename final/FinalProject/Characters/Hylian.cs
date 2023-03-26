@@ -15,19 +15,25 @@ namespace FinalProject.Characters
         }
 
 
-        public void ResetHeal()
+        public override void SetSpecialTrait(bool trait)
         {
-            if (GetSpecialTrait())
+            if (trait == true)
+            {
+                base.SetSpecialTrait(trait);
+            }
+            else
             {
                 float chance = GenerateValue(0, 1, false);
                 // chance = (float)Math.Round(chance, MidpointRounding.ToEven);
                 if (chance >= 0.8)
                 {
-                    SetSpecialTrait(false);
+                    base.SetSpecialTrait(false);
                     Console.Write($"After the battle ended you found a fairy. Since your bottle is empty you quickly coax it into the bottle with the promise of adventure. Your ability to cheat death has been regained!\n");
+                    ConsoleUtilities.WaitForKeyPress();
                 }
             }
         }
+
         public override float DefenseSkill()
         {
             return base.DefenseSkill();
@@ -39,9 +45,8 @@ namespace FinalProject.Characters
             {
                 SetSpecialTrait(true);
                 SetHeart(GetMaxHeart());
-                return "You fall. Flat on your face in an extremely inelegant manner with a sound of *PLAP*. the cork on the jar you keep your trusty travel companion in pops off setting the prison... er... eager adventure free. The fairy sneezes as she leaves which inadvertently heals all of your wounds. including that one from years ago when you fell off your bike.\n";
             }
-            return "You fall. Flat on your face in an extremely inelegant manner with a sound of *PLAP*. unfortunately your fairy motel is currently vacant, thus there is no stupidly miraculously recovery. I guess everyone's luck runs out some time.\n";
+            return HealNarrative();
         }
 
         public override int MonsterChoice()
@@ -62,29 +67,42 @@ namespace FinalProject.Characters
             }
             else
             {
-                Console.Write("Not enough magic power to execute this attack.\n");
                 return 0;
             }
         }
 
         public override string AttackNarrative(float damage)
         {
-            return $"You swing your sword with all your might and  deal {damage} hearts worth of damage.";
+            return $"You swing your sword with all your might and deal {damage} hearts worth of damage.\n";
         }
 
         public override string DefendNarrative()
         {
-            return $"You block with your shield and prevent all damage.";
+            return $"You ready your shield and watch your enemy closely.\n";
         }
 
         public override string SpecialNarrative(float damage)
         {
-            return $"You draw your bow, put an ice arrow and let it fly, {damage} hearts worth of damage pierce your enemy.";
+            if (damage > 0)
+            {
+                return $"You channel energy into your sword then swing with all your might creating a expanding ring of energy! You deal {damage} hearts worth of damage to your enemy.\n";
+            }
+            else
+            {
+                return "You attempt to channel energy to your blade, but find yourself too mentally taxed to do so.\n";
+            }
         }
 
         public override string HealNarrative()
         {
-            return $"You heal.";
+            if (GetHeart() > 0)
+            {
+                return $"You fall. Flat on your face. In an extremely inelegant manner with a sound of *PLAP*. The cork on the jar you keep your trusty travel companion in pops off setting the priso... er... eager fairy \"adventurer\" free. The fairy sneezes as she leaves which inadvertently heals all of your wounds.\n";
+            }
+            else
+            {
+                return "You fall. Flat on your face. In an extremely inelegant manner with a sound of *PLAP*. Unfortunately your fairy motel is currently vacant. Thus there is no stupidly miraculous recovery. I guess everyone's luck runs out some time.\n";
+            }
         }
     }
 }

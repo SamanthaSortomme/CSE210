@@ -8,7 +8,7 @@ namespace FinalProject.Characters
 
         public override string AttackNarrative(float damage)
         {
-            return $"You see a Deku Nut fly at your face. {damage} hearts worth of damage knock the wind out of you.";
+            return $"The scrub spits a large nut right at your face. {damage} hearts worth of damage knock the wind out of you.\n";
         }
 
         public override float AttackSkill()
@@ -18,7 +18,7 @@ namespace FinalProject.Characters
 
         public override string DefendNarrative()
         {
-            return $"He plops in the ground, you missed him this time.";
+            return $"He plops in the ground looking like an overgrown weed.\n";
         }
 
         public override float DefenseSkill()
@@ -29,7 +29,14 @@ namespace FinalProject.Characters
 
         public override string HealNarrative()
         {
-            return $"He appears healthier than he used to be... /fail";
+            if (GetHeart() <= 0)
+            {
+                return $"The Scrub gets knocked out of its hidey-hole and flounders for a moment before it stops moving.\n";
+            }
+            else
+            {
+                return "The Scrub gets knocked out of its hidey-hole and flounders for a moment before regaining its composure; quickly diving back in. You're not sure, but it seems its wounds are gone.\n";
+            }
         }
 
         public override string HealSkill()
@@ -42,10 +49,9 @@ namespace FinalProject.Characters
                 {
                     SetSpecialTrait(true);
                     SetHeart(GetMaxHeart());
-                    return "The Scrub gets knocked out of it's hidey-hole and flounders for a moment before regaining it's composure and quickly diving back in. You're not sure, but it seems it's wounds are gone.\n";
                 }
             }
-            return "The Scrub gets knocked out of it's hidey-hole and flounders for a moment before it stops moving.\n";
+            return HealNarrative();
         }
 
         public override int MonsterChoice()
